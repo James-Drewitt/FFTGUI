@@ -2,29 +2,12 @@ function varargout = FFTGUI(varargin)
 % FFTGUI M-file for FFTGUI.fig
 %      FFTGUI, Fast Fourier Transform GUI
 %      James W E Drewitt
+%      Copyright 2018, James W E Drewitt
 %      james.drewitt@bristol.ac.uk
 %
-%      H = FFTGUI returns the handle to a new FFTGUI or the handle to
-%      the existing singleton*.
 %
-%      FFTGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in FFTGUI.M with the given input arguments.
-%
-%      FFTGUI('Property','Value',...) creates a new FFTGUI or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before FFTGUI_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to FFTGUI_OpeningFcn via varargin.
-%
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
-%
-% See also: GUIDE, GUIDATA, GUIHANDLES
-
-% Edit the above text to modify the response to help FFTGUI
-
 % Last Modified by GUIDE v2.5 30-Aug-2011 18:15:40
-
+%
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -93,7 +76,10 @@ clear SQ gr;
 axes(handles.axes1)
 sqdat=uigetfile('*.dat', 'Select S(Q) file');
 global SQ
+global SQreset
 SQ=importdata(sqdat);
+SQ(:,2)=SQ(:,2)-1;
+SQreset=SQ;
 plot(SQ(:,1),SQ(:,2));
 xlabel('Scattering vector, Q (1/A)');
 ylabel('Structure factor, S(Q)');
@@ -124,7 +110,7 @@ global gr
 global gr2
 global rho
 axes(handles.axes1)
-[gr]=FastFT(SQ2,rho,13,27);
+[gr]=FastFT(SQ2,rho,13,11);
         plot(gr(:,1),gr(:,2));
         xlim([0 8]);
         xlabel('Distance r (A)');
@@ -145,13 +131,13 @@ function DoBFFT_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Back transform: from G(r) to BT(Q)
-global SQ
+global SQreset
 global gr2
 global rho
 gr2(:,2)=gr2(:,2)-1;
 axes(handles.axes1)
 [BT]=BFFT(gr2,rho,13);
-        plot(SQ(:,1),SQ(:,2),BT(:,1),BT(:,2));
+        plot(SQreset(:,1),SQreset(:,2),BT(:,1),BT(:,2));
         xlim([0,25])
         xlabel('Scattering vector, Q (1/A)');
         ylabel('Structure factor, S(Q)');
@@ -191,7 +177,7 @@ SQ2(:,2)=SQ2(:,2).*((sin((pi.*SQ2(:,1))./Qmax))./((pi.*SQ2(:,1))./Qmax));
 plot(SQ(:,1),SQ(:,2),SQ2(:,1),SQ2(:,2));
 xlabel('Scattering vector, Q (1/A)');
 ylabel('Structure factor, S(Q)');
-
+dlmwrite('SQ_XL.dat',SQ2,'delimiter','\t','precision','%.4f')
 % --------------------------------------------------------------------
 function CosineWindow_Callback(hObject, eventdata, handles)
 % hObject    handle to CosineWindow (see GCBO)
@@ -210,14 +196,14 @@ default_ans={'10'};
 cospar=inputdlg(prompt,title,1,default_ans);
 cosmin=str2num(cospar{1});
 n=(cosmax-cosmin)/qstep;
-x=1:n;
-Win(x)=0+((pi*(x/n))/2);
-for j=1+(cosmin/qstep):(cosmax/qstep);
-    SQ2(j,2)=SQ2(j,2)*cos(Win(j-(cosmin/qstep)));
+for j=1+(cosmin/qstep):1+(cosmax/qstep);
+    k=j-(cosmin/qstep);
+    SQ2(j,2)=SQ2(j,2)*0.5*(1.0+cos(k*pi/n))
 end
 plot(SQ(:,1),SQ(:,2),SQ2(:,1),SQ2(:,2));
 xlabel('Scattering vector, Q (1/A)');
 ylabel('Structure factor, S(Q)');
+dlmwrite('SQ_cos.dat',SQ2,'delimiter','\t','precision','%.4f')
 
 % --------------------------------------------------------------------
 function Spline_fit_Callback(hObject, eventdata, handles)
@@ -245,15 +231,19 @@ xlabel('Scattering vector, Q (1/A)');
 ylabel('Structure factor, S(Q)');
 OUT(:,1)=x2(:);
 OUT(:,2)=y2(:);
+SQ=OUT;
 SQ2=OUT;
+dlmwrite('SQ_spline.dat',SQ,'delimiter','\t','precision','%.4f')
 
 % --------------------------------------------------------------------
 function Reset_Callback(hObject, eventdata, handles)
 % hObject    handle to Reset (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global SQreset
 global SQ
 global SQ2
+SQ = SQreset;
 axes(handles.axes1)
 plot(SQ(:,1),SQ(:,2));
 xlabel('Scattering vector, Q (1/A)');
@@ -345,8 +335,7 @@ subplot(2,1,1);plot(gr(:,1),gr(:,2),grCN(:,1),grCN(:,2));
 axis([xlim ylim -1 3])
 subplot(2,1,2);plot(gr(:,1),gr(:,2));
 axis([xlim ylim -1 3])
-Ap=Ipeak(grCN);
-Ap(71,2)
+Ap=Ipeak(grCN)
 
 % --------------------------------------------------------------------
 function EXIT_Callback(hObject, eventdata, handles)
