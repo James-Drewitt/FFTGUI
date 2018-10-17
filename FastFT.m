@@ -1,7 +1,11 @@
 function [G]=FastFT(dat,rho,M,maxq)
 %% FastFT(dat,rho,M,Qmax);
 %Fourier transform of dat using the FFT algorithm
-%James W E Drewitt 01/04/2011, james.drewitt@cnrs-orleans.fr
+%      Dr James W E Drewitt
+%      Copyright 2018, James W E Drewitt
+%      james.drewitt@bristol.ac.uk; james.drewitt@gmail.com
+%
+% Oringally coded written by James W E Drewitt 01/04/2011, james.drewitt@cnrs-orleans.fr
 %
 %
 % input
