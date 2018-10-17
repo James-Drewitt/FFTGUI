@@ -140,6 +140,7 @@ axes(handles.axes1)
         xlim([0,25])
         xlabel('Scattering vector, Q (1/A)');
         ylabel('Structure factor, S(Q)');
+dlmwrite('BT.dat',BT,'delimiter','\t','precision','%.4f')
 set(handles.DoFFT,'enable','on')
 set(handles.Reset,'enable','on')
 set(handles.DoBFFT,'enable','off')

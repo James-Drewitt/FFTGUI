@@ -33,7 +33,7 @@ while k<(nrows)
     F((ntrans+1)-k+1)=-F(k+1);
     k=k+1;
 end
-FT=imag(fft(real(F)));
+FT=imag(fft(real(F)))/ntrans;
 q=zeros(nhalf,1);
 BT=zeros(nhalf,2);
 for m=1:nhalf
