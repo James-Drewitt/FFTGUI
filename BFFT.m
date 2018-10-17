@@ -1,7 +1,11 @@
 function [BT]=BFFT(rdat,rho,M)
 %% BFFT(dat,rho,M);
 %Fourier backtransform transform of real space data using the FFT algorithm
-%James W E Drewitt 01/04/2011, james.drewitt@cnrs-orleans.fr
+%      Dr James W E Drewitt
+%      Copyright 2018, James W E Drewitt
+%      james.drewitt@bristol.ac.uk; james.drewitt@gmail.com
+%
+% Originally written: James W E Drewitt 01/04/2011, james.drewitt@cnrs-orleans.fr
 %
 %
 % input
