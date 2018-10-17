@@ -1,11 +1,10 @@
 function varargout = FFTGUI(varargin)
 % FFTGUI M-file for FFTGUI.fig
 %      FFTGUI, Fast Fourier Transform GUI
-%      James W E Drewitt
+%      Dr James W E Drewitt
 %      Copyright 2018, James W E Drewitt
-%      james.drewitt@bristol.ac.uk
-%
-%
+%      james.drewitt@bristol.ac.uk; james.drewitt@gmail.com
+%THIS IS A TEST
 % Last Modified by GUIDE v2.5 30-Aug-2011 18:15:40
 %
 % Begin initialization code - DO NOT EDIT
