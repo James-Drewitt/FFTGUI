@@ -106,7 +106,8 @@ function DoFFT_Callback(hObject, eventdata, handles)
 % Fast Fourier Transform of S(Q)
 global SQ2; global gr; global gr2; global rho; global filepath
 axes(handles.axes1)
-[gr]=FastFT(SQ2,rho,13,11);
+MAXQ=SQ2(length(SQ2),1)
+[gr]=FastFT(SQ2,rho,13,MAXQ);
         plot(gr(:,1),gr(:,2));
         xlim([0 8]);
         xlabel('Distance r (A)');
