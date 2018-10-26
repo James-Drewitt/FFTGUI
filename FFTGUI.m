@@ -76,8 +76,11 @@ axes(handles.axes1)
 global filepath; global SQ; global SQreset;
 [sqdat,path]=uigetfile('*.dat', 'Select S(Q) file');
 filepath=strcat(path,sqdat);
-SQ=importdata(filepath);
-SQ(:,2)=SQ(:,2)-1;
+%SQ=importdata(filepath); %LIQUID_DIFFRACT output has header
+headbody=fopen(filepath);
+body=textscan(headbody,'%f %f','headerlines',6);
+SQ=body{:,1};SQ(:,2)=body{:,2};
+SQ(1,2)=0;SQ(:,2)=SQ(:,2)-1;
 SQreset=SQ;
 plot(SQ(:,1),SQ(:,2));
 xlabel('Scattering vector, Q (1/A)');
